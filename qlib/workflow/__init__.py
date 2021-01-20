@@ -38,9 +38,7 @@ class QlibRecorder:
         try:
             yield run
         except Exception as e:
-            self.end_exp(
-                Recorder.STATUS_FA
-            )  # end the experiment if something went wrong
+            self.end_exp(Recorder.STATUS_FA)  # end the experiment if something went wrong
             raise e
         self.end_exp(Recorder.STATUS_FI)
 
@@ -463,14 +461,5 @@ class QlibRecorder:
         self.get_exp().get_recorder().set_tags(**kwargs)
 
 
-import sys
-
-if sys.version_info >= (3, 9):
-    from typing import Annotated
-
-    QlibRecorderWrapper = Annotated[QlibRecorder, Wrapper]
-else:
-    QlibRecorderWrapper = QlibRecorder
-
 # global record
-R: QlibRecorderWrapper = Wrapper()
+R = Wrapper()
