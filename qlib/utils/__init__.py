@@ -1,7 +1,6 @@
 # Copyright (c) Microsoft Corporation.
 # Licensed under the MIT License.
 
-
 from __future__ import division
 from __future__ import print_function
 
@@ -166,7 +165,8 @@ def parse_field(field):
     # - $open+$close -> Feature("open")+Feature("close")
     if not isinstance(field, str):
         field = str(field)
-    return re.sub(r"\$(\w+)", r'Feature("\1")', re.sub(r"(\w+\s*)\(", r"Operators.\1(", field))
+    return re.sub(r"\$\(([^\)]*)\)", r'Feature("\1")',
+                  re.sub(r"\$(\w+)", r'Feature("\1")', re.sub(r"(\w+\s*)\(", r"Operators.\1(", field)))
 
 
 def get_module_by_module_path(module_path: Union[str, ModuleType]):
@@ -224,9 +224,10 @@ def get_cls_kwargs(config: Union[dict, str], default_module: Union[str, ModuleTy
     return klass, kwargs
 
 
-def init_instance_by_config(
-    config: Union[str, dict, object], default_module=None, accept_types: Union[type, Tuple[type]] = (), **kwargs
-) -> Any:
+def init_instance_by_config(config: Union[str, dict, object],
+                            default_module=None,
+                            accept_types: Union[type, Tuple[type]] = (),
+                            **kwargs) -> Any:
     """
     get initialized instance with config
 
@@ -283,7 +284,6 @@ def compare_dict_value(src_data: dict, dst_data: dict):
     :param dst_data:
     :return:
     """
-
     class DateEncoder(json.JSONEncoder):
         # FIXME: This class can only be accurate to the day. If it is a minute,
         # there may be a bug
@@ -583,10 +583,8 @@ def transform_end_date(end_date=None, freq="day"):
 
     last_date = D.calendar(freq=freq)[-1]
     if end_date is None or (str(end_date) == "-1") or (pd.Timestamp(last_date) < pd.Timestamp(end_date)):
-        log.warning(
-            "\nInfo: the end_date in the configuration file is {}, "
-            "so the default last date {} is used.".format(end_date, last_date)
-        )
+        log.warning("\nInfo: the end_date in the configuration file is {}, "
+                    "so the default last date {} is used.".format(end_date, last_date))
         end_date = last_date
     return end_date
 
@@ -691,9 +689,7 @@ def exists_qlib_data(qlib_dir):
     # check calendar bin
     for _calendar in calendars_dir.iterdir():
 
-        if ("_future" not in _calendar.name) and (
-            not list(features_dir.rglob(f"*.{_calendar.name.split('.')[0]}.bin"))
-        ):
+        if ("_future" not in _calendar.name) and (not list(features_dir.rglob(f"*.{_calendar.name.split('.')[0]}.bin"))):
             return False
 
     # check instruments
@@ -715,8 +711,7 @@ def check_qlib_data(qlib_config):
                 f"\n\tIf you are using the data provided by qlib: "
                 f"https://qlib.readthedocs.io/en/latest/component/data.html#qlib-format-dataset"
                 f"\n\tIf you are using your own data, please dump the data again: "
-                f"https://qlib.readthedocs.io/en/latest/component/data.html#converting-csv-format-into-qlib-format"
-            )
+                f"https://qlib.readthedocs.io/en/latest/component/data.html#converting-csv-format-into-qlib-format")
         except AssertionError:
             raise
 
@@ -781,7 +776,6 @@ def flatten_dict(d, parent_key="", sep=".") -> dict:
 #################### Wrapper #####################
 class Wrapper:
     """Wrapper class for anything that needs to set up during qlib.init"""
-
     def __init__(self):
         self._provider = None
 
